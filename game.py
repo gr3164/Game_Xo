@@ -1,7 +1,11 @@
+from itertools import groupby
 import random
 
 
 box = [['\u00B7','\u00B7','\u00B7'], ['\u00B7','\u00B7','\u00B7'], ['\u00B7','\u00B7','\u00B7']]
+win = [[[0, 0],[0, 1],[0, 2]], [[1, 0], [1, 1], [1, 2]], [[2, 0], [2, 1], [2, 2]], 
+        [[0, 0], [1, 0], [2, 0]], [[0, 1], [1, 1], [2, 1]], [[0, 2], [1, 2], [2, 2]],
+        [[0, 0], [1, 1], [2, 2]], [[0, 2], [2, 2], [2, 0]]]
 unique = [(x,y) for x in range(0,3) for y in range(0,3)]
 bot = random.choice(unique)
 
@@ -25,64 +29,82 @@ def Compare_unique(p, unique):
                 break
         return p
     else: return p
+#=======================================================
+          
 
-# def Compare_win(box, w):
-#     # control = True
-#     for j in box[0]:
-#         if j == 'x':
-#             print(f'{w} Win!!!')
-#             control = False
-#             return control
-            
-def Compare_win(box, w):
-    if w == 2:
-        for i in range(0,3):
-            res = all(x == box[0][0] for x in box[i])
-            if res == True:
-                return res
+def Win_g(box):
+    for i in range(0,3):
+        for x in box:
+            if len(x) == x.count(x[i]) and not '\u00B7' in x:
+                return True
             else:
-                for j in range(0,3):
-                    mylist = [ i[x][0] for x in range(0,3) for i in box]
-                    mylist = [mylist[i:i + 3] for i in range(0, len(mylist), 3)] 
-                    res2 = all(x == mylist[0][0] for x in mylist[j])
-                    if res2 == True:
-                        return res2
-                    # доделать условие победы по пересечению от угла до угла
+                False
+        
 
-       
-                
+def Win_v(box):
+    mylist = [ i[x][0] for x in range(0,3) for i in box]
+    mylist = [mylist[i:i + 3] for i in range(0, len(mylist), 3)]
+
+    for i in range(0,3):
+        if len(mylist[i]) == mylist[i].count(mylist[i][0]) and not '\u00B7' in mylist[i]:
+            return True
+        else:
+            False
+
+def Win_x(box):
+    mylist_x = [[],[]]
+    i = 0
+    j = -1
+    for x in box:
+        mylist_x[0].append(x[i])
+        mylist_x[1].append(x[j])
+        i += 1
+        j -= 1
+    for i in range(0,2):
+        if len(mylist_x[i]) == mylist_x[i].count(mylist_x[i][0]) and not '\u00B7' in mylist_x[i]:
+            return True
+        else:
+            False
 
 
 
-control = True 
+    # if len(box[0]) == box[0].count(box[0][0]) and not '\u00B7' in box[0]:
+    #     print("Win")
+    
+   
 
 print_key = input("Отоброжать напровляющие(Ряд/Столб) Y/N: ").lower()
 # choice = str(input("Будете ходить первым? y/n: ").lower())
 
-while control == True:
-    
-    Print_box(box, print_key)
+while True:
+    Print_box(box, print_key) 
 
-    if 0 < len(unique) and control == True:
+    if 0 < len(unique):
         #user Ввод пользователя + проверка на уникальность + удаление элемента из уникального списка
         user = int(input("Число по горизонтали(РЯД): "))-1, int(input("Число по вериткали (СТОЛБ): "))-1
         user = Compare_unique(user, unique)
         unique.remove(user)
         box[user[0]][user[1]] = 'x'
-        print(type(Compare_win(box, user)))
-        print(Compare_win(box, 2))
+        Win_g(box)
+        print(Win_g(box))
+        Win_v(box)
+        print(Win_v(box))
+        Win_x(box)
+        print(Win_x(box))
+        
+        
+      
 
-        if 0 == len(unique) and control == False:
+        if 0 == len(unique):
             Print_box(box, print_key)
             print("Ничья")
-            control = False
             break
 
-        #bot Выбор рандомного уникального элемента + удаление элемента из уникального списка
+        # bot Выбор рандомного уникального элемента + удаление элемента из уникального списка
         # bot = random.choice(unique)
         # unique.remove(bot)
         # box[bot[0]][bot[1]] = 'o'
-        # Compare_win(box, bot)
+        
 
         print(f'Вы: {user}')
         print(f'Бот: {bot}')
@@ -91,6 +113,5 @@ while control == True:
     else:
         Print_box(box, print_key)
         print("Ничья")
-        control = False
         break
  
