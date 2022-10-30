@@ -1,22 +1,19 @@
-from itertools import groupby
 import random
 
-
 box = [['\u00B7','\u00B7','\u00B7'], ['\u00B7','\u00B7','\u00B7'], ['\u00B7','\u00B7','\u00B7']]
-win = [[[0, 0],[0, 1],[0, 2]], [[1, 0], [1, 1], [1, 2]], [[2, 0], [2, 1], [2, 2]], 
-        [[0, 0], [1, 0], [2, 0]], [[0, 1], [1, 1], [2, 1]], [[0, 2], [1, 2], [2, 2]],
-        [[0, 0], [1, 1], [2, 2]], [[0, 2], [2, 2], [2, 0]]]
 unique = [(x,y) for x in range(0,3) for y in range(0,3)]
-bot = random.choice(unique)
+# bot = random.choice(unique)
 
 def Print_box(box, key):
     if key == 'y':
         j = 1
+        print('====================')
         print("   1 2 3")
         for i in box:
             print(f'{j}|',' '.join(i))
             j = j+1
-    if key == 'n':
+    else:
+        print('====================')
         for i in box:
             print(' '.join(i))
 
@@ -31,25 +28,16 @@ def Compare_unique(p, unique):
     else: return p
 #=======================================================
           
-
 def Win_g(box):
-    for i in range(0,3):
-        for x in box:
-            if len(x) == x.count(x[i]) and not '\u00B7' in x:
-                return True
-            else:
-                False
-        
-
-def Win_v(box):
     mylist = [ i[x][0] for x in range(0,3) for i in box]
     mylist = [mylist[i:i + 3] for i in range(0, len(mylist), 3)]
-
     for i in range(0,3):
-        if len(mylist[i]) == mylist[i].count(mylist[i][0]) and not '\u00B7' in mylist[i]:
-            return True
-        else:
-            False
+        for x in box:
+            if len(x) == x.count(x[i]) and not '\u00B7' in x or len(mylist[i]) == mylist[i].count(mylist[i][0]) and not '\u00B7' in mylist[i]:
+                return True
+            else:
+                return Win_x(box)
+        
 
 def Win_x(box):
     mylist_x = [[],[]]
@@ -66,12 +54,7 @@ def Win_x(box):
         else:
             False
 
-
-
-    # if len(box[0]) == box[0].count(box[0][0]) and not '\u00B7' in box[0]:
-    #     print("Win")
-    
-   
+      
 
 print_key = input("Отоброжать напровляющие(Ряд/Столб) Y/N: ").lower()
 # choice = str(input("Будете ходить первым? y/n: ").lower())
@@ -85,31 +68,26 @@ while True:
         user = Compare_unique(user, unique)
         unique.remove(user)
         box[user[0]][user[1]] = 'x'
-        Win_g(box)
-        print(Win_g(box))
-        Win_v(box)
-        print(Win_v(box))
-        Win_x(box)
-        print(Win_x(box))
+        if Win_g(box):
+            Print_box(box, print_key)
+            print("Вы победили !!!")
+            break
         
-        
-      
-
         if 0 == len(unique):
             Print_box(box, print_key)
             print("Ничья")
             break
 
-        # bot Выбор рандомного уникального элемента + удаление элемента из уникального списка
-        # bot = random.choice(unique)
-        # unique.remove(bot)
-        # box[bot[0]][bot[1]] = 'o'
-        
 
-        print(f'Вы: {user}')
-        print(f'Бот: {bot}')
-        print('====================')
-        # print(unique)
+        # bot Выбор рандомного уникального элемента + удаление элемента из уникального списка
+        bot = random.choice(unique)
+        unique.remove(bot)
+        box[bot[0]][bot[1]] = 'o'
+        if Win_g(box):
+            Print_box(box, print_key)
+            print("Бот выиграл !!!")
+            break
+
     else:
         Print_box(box, print_key)
         print("Ничья")
