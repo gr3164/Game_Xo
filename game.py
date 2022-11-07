@@ -49,32 +49,24 @@ while True:
     if check_win(box) != False:
         print("Победа " + check_win(box))
         break 
-
-    if 0 < len(unique):
-        #user Ввод пользователя + проверка на уникальность + удаление элемента из уникального списка
-        user = int(input("Число по горизонтали(РЯД): "))-1, int(input("Число по вериткали (СТОЛБ): "))-1
-        user = Compare_unique(user, unique)
-        unique.remove(user)
-        box[user[0]][user[1]] = 'x'
-
-     
-        
-        
-        if 0 == len(unique):
-            Print_box(box, print_key)
-            print("Ничья")
-            break
-
-
-        # bot Выбор рандомного уникального элемента + удаление элемента из уникального списка
-        bot = random.choice(unique)
-        unique.remove(bot)
-        box[bot[0]][bot[1]] = 'o'
-
-
-        
-    else:
+    if 0 == len(unique):
         Print_box(box, print_key)
         print("Ничья")
         break
- 
+
+    #user Ввод пользователя + проверка на уникальность + удаление элемента из уникального списка
+    user = int(input("Число по горизонтали(РЯД): "))-1, int(input("Число по вериткали (СТОЛБ): "))-1
+    user = Compare_unique(user, unique)
+    unique.remove(user)
+    box[user[0]][user[1]] = 'x'
+
+    if 0 == len(unique):
+        Print_box(box, print_key)
+        print("Ничья")
+        break
+
+    # bot Выбор рандомного уникального элемента + удаление элемента из уникального списка
+    bot = random.choice(unique)
+    unique.remove(bot)
+    box[bot[0]][bot[1]] = 'o'
+   
